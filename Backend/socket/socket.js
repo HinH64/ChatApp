@@ -7,16 +7,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
-		origin: ["http://localhost:3000"],
+		origin: [process.env.VITE_SOCKET_IO_URL],
 		methods: ["GET", "POST"],
 	},
 });
-
 export const getReceiverSocketId = (receiverId) => {
 	return userSocketMap[receiverId];
 };
 
-const userSocketMap = {}; // {userId: socketId}
+const userSocketMap = {}; 
 
 io.on("connection", (socket) => {
 	console.log("a user connected", socket.id);
@@ -34,5 +33,4 @@ io.on("connection", (socket) => {
 		io.emit("getOnlineUsers", Object.keys(userSocketMap));
 	});
 });
-
 export { app, io, server };
