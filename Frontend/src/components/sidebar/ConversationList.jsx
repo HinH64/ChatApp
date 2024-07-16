@@ -3,7 +3,6 @@ import useGetConversationList from "../../hooks/useGetConversationList";
 
 const ConversationList = () => {
   const { loading, conversationList } = useGetConversationList();
-  console.log(conversationList);
   return (
     <div className='py-2 flex flex-col overflow-auto'>
      {conversationList.map((conversation, idx) => (
