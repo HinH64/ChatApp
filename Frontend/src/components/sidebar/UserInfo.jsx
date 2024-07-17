@@ -1,5 +1,5 @@
 const UserInfo = ({userData, isOnline}) => {
-    console.log(isOnline);
+    
   return (
     <>
         <div className={`avatar ${isOnline ? "online" : ""}`}>
