@@ -14,9 +14,9 @@ const Login = () => {
 	};
 
   return (
-    <div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
-        <div className='w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
-            <h1 className='text-3xl font-semibold text-center text-gray-300'>
+    <div className='flex flex-col items-center justify-center min-w-96 mx-auto bg-base-200 rounded-lg'>
+        <div className='w-full p-6 shadow-md bg-clip-padding backdrop-filter  '>
+            <h1 className='text-3xl font-semibold text-center'>
                 Login
                 <span className='text-blue-500'> ChatApp</span>
             </h1>
@@ -40,14 +40,18 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <Link to='/signup' className='text-sm  hover:underline hover:text-blue-600 mt-2 inline-block'>
-						{"Don't"} have an account?
-				</Link>
-                <div>
-                    <button className='btn btn-block btn-sm mt-2 border border-slate-700' disabled={loading}>
+                
+                <div className="form-control mt-6">
+                    <button className='btn btn-primary ' disabled={loading}>
 							{loading ? <span className='loading loading-spinner'></span> : "Login"}
 					</button>
                 </div>
+                <div className='divider px-3'>OR</div>
+                    <Link to='/signup' className="form-control mt-6">
+                        <button className='btn btn-accent'>
+                                Sign Up
+                        </button>
+                    </Link>     
             </form>
         </div>
     </div>
