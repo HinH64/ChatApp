@@ -14,11 +14,12 @@ const MessageInput = () => {
 	};
 
   return (
-    <form className='px-4 my-3' onSubmit={handleSubmit}>
-        <div className='w-full relative'>
+    <form className='px-4 py-4 bg-base-100' onSubmit={handleSubmit}>
+        <div className='w-full relative '>
+          <div className='flex-1 overflow-auto items-center justify-center min-w-96 mx-96 min-h-5'>
             <input
                 type='text'
-                className='border text-sm rounded-lg block w-full p-2.5  bg-gray-700 border-gray-600 text-white'
+                className=' input input-bordered rounded-lg block w-full p-2.5 '
                 placeholder='Send a message'
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -26,6 +27,7 @@ const MessageInput = () => {
             <button type='submit' className='absolute inset-y-0 end-0 flex items-center pe-3'>
                  {loading ? <div className='loading loading-spinner'></div> : <BsSend />}
             </button>
+          </div>
         </div>
     </form>
   )

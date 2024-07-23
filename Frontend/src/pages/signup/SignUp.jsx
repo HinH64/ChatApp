@@ -22,7 +22,7 @@ const SignUp = () => {
 		await signup(inputs);
 	};
   return (
-    <div className='flex flex-col items-center justify-center min-w-96 mx-auto bg-base-200 rounded-lg'>
+    <div className='flex flex-col items-center justify-center min-w-96 mx-auto bg-base-100 rounded-lg'>
         <div className='w-full p-6 shadow-md bg-clip-padding backdrop-filter '>
             <h1 className='text-3xl font-semibold text-center'>
                 Sign Up

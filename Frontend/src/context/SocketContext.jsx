@@ -15,7 +15,7 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (authUser) {
-			const socket = io(process.env.SOCKET_IO_URL, {
+			const socket = io("https://chatapp-qmmc.onrender.com", {
 				query: {
 					userId: authUser._id,
 				},

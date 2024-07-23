@@ -16,19 +16,21 @@ const MessageList = () => {
 	}, [messages]);
 
   return (
-    <div className='px-4 flex-1 overflow-auto'>
-      {!loading &&
-				messages.length > 0 &&
-				messages.map((message) => (
-					<div key={message._id} ref={lastMessageRef}>
-						<Message message={message} />
-					</div>
-				))}
-      {loading && [...Array(3)].map((_, idx) => <MessageSkeleton key={idx} />)}
-      {!loading && messages.length === 0 && (
-				<p className='text-center'>Send a message to start the conversation</p>
-			)}
-    </div>
+	<div className='px-4 flex-1 bg-base-100 '>
+		<div className='px-4 flex-1 overflow-auto items-center justify-center min-w-96 mx-96 min-h-5'>
+		{!loading &&
+					messages.length > 0 &&
+					messages.map((message) => (
+						<div key={message._id} ref={lastMessageRef}>
+							<Message message={message} />
+						</div>
+					))}
+		{loading && [...Array(3)].map((_, idx) => <MessageSkeleton key={idx} />)}
+		{!loading && messages.length === 0 && (
+					<p className='text-center'>Send a message to start the conversation</p>
+				)}
+		</div>
+	</div>
   )
 }
 

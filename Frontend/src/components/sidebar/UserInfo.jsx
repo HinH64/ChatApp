@@ -12,7 +12,7 @@ const UserInfo = ({userData, isOnline}) => {
         </div> 
         <div className='flex flex-col flex-1'>
             <div className='flex gap-3 justify-between'>
-                <p className='font-bold text-gray-200'>{userData.fullName}</p>
+                <p className='font-bold '>{userData.fullName}</p>
                 
             </div>
         </div> 
