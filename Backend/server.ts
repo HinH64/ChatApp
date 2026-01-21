@@ -1,5 +1,5 @@
 import path from "path";
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
@@ -14,7 +14,7 @@ const __dirname = path.resolve();
 
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json()); 
+app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRouters);
@@ -23,12 +23,11 @@ app.use("/api/users", userRoutes);
 
 app.use(express.static(path.join(__dirname, "/Frontend/dist")));
 
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "Frontend", "dist", "index.html"));
+app.get("/{*splat}", (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "Frontend", "dist", "index.html"));
 });
 
 server.listen(PORT, () => {
-    connectToMongoDB();
-    console.log('Server Running on port ' + PORT);
-}
-);
+  connectToMongoDB();
+  console.log("Server Running on port " + PORT);
+});

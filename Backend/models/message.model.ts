@@ -1,0 +1,26 @@
+import mongoose, { Schema } from "mongoose";
+import type { IMessage } from "../types/index.js";
+
+const messageSchema = new Schema<IMessage>(
+  {
+    senderId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    receiverId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+const Message = mongoose.model<IMessage>("Message", messageSchema);
+
+export default Message;
