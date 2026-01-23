@@ -1,11 +1,14 @@
 import type { Socket } from "socket.io-client";
 
+export type UserRole = "user" | "admin";
+
 export interface User {
   _id: string;
   fullName: string;
   username: string;
   profilePic: string;
   gender: "male" | "female";
+  role: UserRole;
   email?: string;
   bio?: string;
   lastSeen?: string;

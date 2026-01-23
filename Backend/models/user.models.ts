@@ -36,6 +36,11 @@ const userSchema = new Schema<IUser>(
       maxlength: 150,
       default: "",
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
     lastSeen: {
       type: Date,
       default: Date.now,

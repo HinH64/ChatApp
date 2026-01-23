@@ -44,6 +44,7 @@ export const signup = async (
         fullName: newUser.fullName,
         username: newUser.username,
         profilePic: newUser.profilePic,
+        role: newUser.role,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -77,6 +78,7 @@ export const login = async (
       fullName: user.fullName,
       username: user.username,
       profilePic: user.profilePic,
+      role: user.role,
     });
   } catch (error) {
     if (error instanceof Error) {

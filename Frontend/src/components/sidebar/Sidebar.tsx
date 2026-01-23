@@ -7,7 +7,8 @@ import ThemeToggle from "../ui/ThemeToggle";
 import ProfileModal from "../profile/ProfileModal";
 import { useState, useEffect } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { FiMessageCircle } from "react-icons/fi";
+import { FiMessageCircle, FiShield } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import useConversation from "../../zustand/useConversation";
 
 const Sidebar = () => {
@@ -72,6 +73,15 @@ const Sidebar = () => {
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                {authUser?.role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="btn btn-ghost btn-sm btn-circle"
+                    title="Admin Panel"
+                  >
+                    <FiShield className="w-5 h-5 text-primary" />
+                  </Link>
+                )}
                 <ThemeToggle />
               </div>
             </div>

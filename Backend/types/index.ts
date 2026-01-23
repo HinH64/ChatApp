@@ -1,6 +1,8 @@
 import { Request } from "express";
 import { Document, Types } from "mongoose";
 
+export type UserRole = "user" | "admin";
+
 export interface IUser extends Document {
   _id: Types.ObjectId;
   fullName: string;
@@ -10,6 +12,7 @@ export interface IUser extends Document {
   profilePic: string;
   email?: string;
   bio: string;
+  role: UserRole;
   lastSeen: Date;
   createdAt: Date;
   updatedAt: Date;
