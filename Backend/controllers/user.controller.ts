@@ -179,12 +179,10 @@ export const resetAvatar = async (
       }
     }
 
-    // Generate default avatar based on gender
-    const defaultAvatar = `https://avatar.iran.liara.run/public/${user.gender === "male" ? "boy" : "girl"}?username=${user.username}`;
-
+    // Reset to empty - Frontend Avatar component handles fallback with initials
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { profilePic: defaultAvatar },
+      { profilePic: "" },
       { new: true }
     ).select("-password");
 

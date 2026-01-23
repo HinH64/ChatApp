@@ -4,6 +4,7 @@ import LogoutButton from "./LogoutButton";
 import { useAuthContext } from "../../context/AuthContext";
 import UserInfo from "./UserInfo";
 import ThemeToggle from "../ui/ThemeToggle";
+import ProfileModal from "../profile/ProfileModal";
 import { useState, useEffect } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { FiMessageCircle } from "react-icons/fi";
@@ -12,6 +13,7 @@ import useConversation from "../../zustand/useConversation";
 const Sidebar = () => {
   const { authUser } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { selectedConversation } = useConversation();
 
   // Close sidebar when a conversation is selected (mobile only)
@@ -77,7 +79,11 @@ const Sidebar = () => {
             {/* User info card */}
             {authUser && (
               <div className="bg-base-200/50 rounded-xl p-3 flex items-center justify-between">
-                <UserInfo userData={authUser} isOnline={false} linkToProfile />
+                <UserInfo
+                  userData={authUser}
+                  isOnline={false}
+                  onClick={() => setIsProfileModalOpen(true)}
+                />
                 <LogoutButton />
               </div>
             )}
@@ -101,6 +107,12 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
     </>
   );
 };

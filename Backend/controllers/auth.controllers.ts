@@ -26,15 +26,12 @@ export const signup = async (
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
-
     const newUser = new User({
       fullName,
       username,
       password: hashedPassword,
       gender,
-      profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
+      profilePic: "", // Frontend Avatar component handles fallback with initials
     });
 
     if (newUser) {
