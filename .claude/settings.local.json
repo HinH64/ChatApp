@@ -5,7 +5,8 @@
       "mcp__d27c09a5-d317-433c-a0fc-d256c102461b__resolve-library-id",
       "Bash(npm install)",
       "Bash(timeout 10 npm run dev:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(timeout:*)"
     ]
   }
 }

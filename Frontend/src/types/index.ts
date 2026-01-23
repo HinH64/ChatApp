@@ -6,8 +6,24 @@ export interface User {
   username: string;
   profilePic: string;
   gender: "male" | "female";
+  email?: string;
+  bio?: string;
+  lastSeen?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface UpdateProfileInputs {
+  fullName?: string;
+  email?: string;
+  bio?: string;
+  gender?: "male" | "female";
+}
+
+export interface ChangePasswordInputs {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 export interface Message {
@@ -55,4 +71,9 @@ export interface SignupInputs {
 
 export interface ApiError {
   error?: string;
+}
+
+export interface ThemeContextType {
+  theme: "light" | "dark";
+  toggleTheme: () => void;
 }

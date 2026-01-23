@@ -2,6 +2,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import useConversation from "../../zustand/useConversation";
 import { extractTime } from "../../../utils/extractTime";
 import type { Message as MessageType } from "../../types";
+import Avatar from "../ui/Avatar";
 
 interface MessageProps {
   message: MessageType;
@@ -12,23 +13,42 @@ const Message = ({ message }: MessageProps) => {
   const { selectedConversation } = useConversation();
   const fromMe = message.senderId === authUser?._id;
   const formattedTime = extractTime(message.createdAt);
-  const chatClassName = fromMe ? "chat-end" : "chat-start";
-  const profilePic = fromMe ? authUser?.profilePic : selectedConversation?.profilePic;
-  const bubbleBgColor = fromMe ? "bg-blue-500" : "";
-  const shakeClass = message.shouldShake ? "shake" : "";
+  const profilePic = fromMe
+    ? authUser?.profilePic
+    : selectedConversation?.profilePic;
+  const shakeClass = message.shouldShake ? "animate-shake" : "";
+
+  const displayName = fromMe
+    ? authUser?.fullName || "Me"
+    : selectedConversation?.fullName || "User";
 
   return (
-    <div className={`chat ${chatClassName}`}>
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <img alt="Tailwind CSS chat bubble component" src={profilePic} />
+    <div className={`flex items-end gap-2 mb-3 ${fromMe ? "flex-row-reverse" : ""}`}>
+      {/* Avatar */}
+      <Avatar
+        src={profilePic}
+        alt={displayName}
+        size="sm"
+      />
+
+      {/* Message bubble */}
+      <div className={`max-w-[70%] ${fromMe ? "items-end" : "items-start"}`}>
+        <div
+          className={`px-4 py-2.5 rounded-2xl ${shakeClass} ${
+            fromMe
+              ? "bg-primary text-primary-content rounded-br-md"
+              : "bg-base-100 text-base-content rounded-bl-md shadow-sm"
+          }`}
+        >
+          <p className="text-sm whitespace-pre-wrap break-words">{message.message}</p>
         </div>
-      </div>
-      <div className={`chat-bubble text-white ${bubbleBgColor} ${shakeClass} pb-2`}>
-        {message.message}
-      </div>
-      <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">
-        {formattedTime}
+        <p
+          className={`text-xs text-base-content/40 mt-1 px-1 ${
+            fromMe ? "text-right" : "text-left"
+          }`}
+        >
+          {formattedTime}
+        </p>
       </div>
     </div>
   );

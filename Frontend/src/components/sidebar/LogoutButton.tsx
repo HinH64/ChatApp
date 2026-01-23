@@ -5,13 +5,18 @@ const LogoutButton = () => {
   const { loading, logout } = useLogout();
 
   return (
-    <div>
+    <button
+      onClick={logout}
+      disabled={loading}
+      className="btn btn-ghost btn-sm btn-circle hover:bg-error/20 hover:text-error"
+      aria-label="Logout"
+    >
       {!loading ? (
-        <BiLogOut className="w-6 h-6 cursor-pointer" onClick={logout} />
+        <BiLogOut className="w-5 h-5" />
       ) : (
-        <span className="loading loading-spinner"></span>
+        <span className="loading loading-spinner loading-sm"></span>
       )}
-    </div>
+    </button>
   );
 };
 

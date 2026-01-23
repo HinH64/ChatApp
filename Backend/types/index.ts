@@ -8,8 +8,24 @@ export interface IUser extends Document {
   password: string;
   gender: "male" | "female";
   profilePic: string;
+  email?: string;
+  bio: string;
+  lastSeen: Date;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface UpdateProfileBody {
+  fullName?: string;
+  email?: string;
+  bio?: string;
+  gender?: "male" | "female";
+}
+
+export interface ChangePasswordBody {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 export interface IMessage extends Document {

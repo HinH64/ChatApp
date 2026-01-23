@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/user.models.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
-import type { SignupBody, LoginBody } from "../types/index.js";
+import type { SignupBody, LoginBody, ChangePasswordBody, AuthenticatedRequest } from "../types/index.js";
 
 export const signup = async (
   req: Request<object, object, SignupBody>,
@@ -96,6 +96,61 @@ export const logout = (_req: Request, res: Response): void => {
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error in logout controller", error.message);
+    }
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const changePassword = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { currentPassword, newPassword, confirmNewPassword } =
+      req.body as ChangePasswordBody;
+    const userId = req.user!._id;
+
+    // Validate input
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      res.status(400).json({ error: "All fields are required" });
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      res.status(400).json({ error: "New passwords don't match" });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      res.status(400).json({ error: "New password must be at least 6 characters" });
+      return;
+    }
+
+    // Get user with password
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Verify current password
+    const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordCorrect) {
+      res.status(400).json({ error: "Current password is incorrect" });
+      return;
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password
+    await User.findByIdAndUpdate(userId, { password: hashedPassword });
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error in changePassword controller", error.message);
     }
     res.status(500).json({ error: "Internal Server Error" });
   }

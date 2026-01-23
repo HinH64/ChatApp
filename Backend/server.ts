@@ -17,6 +17,9 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cookieParser());
 
+// Serve uploaded files (avatars)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/api/auth", authRouters);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);

@@ -26,6 +26,20 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: "",
     },
+    email: {
+      type: String,
+      unique: true,
+      sparse: true, // allows multiple null values
+    },
+    bio: {
+      type: String,
+      maxlength: 150,
+      default: "",
+    },
+    lastSeen: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

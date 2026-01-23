@@ -1,3 +1,5 @@
+import { FiUser } from "react-icons/fi";
+
 interface GenderCheckboxProps {
   onCheckboxChange: (gender: string) => void;
   selectedGender: string;
@@ -5,36 +7,35 @@ interface GenderCheckboxProps {
 
 const GenderCheckbox = ({ onCheckboxChange, selectedGender }: GenderCheckboxProps) => {
   return (
-    <div className="flex">
-      <div className="form-control">
-        <label
-          className={`label gap-2 cursor-pointer ${
-            selectedGender === "male" ? "selected" : ""
+    <div className="form-control">
+      <label className="label">
+        <span className="label-text font-medium">Gender</span>
+      </label>
+      <div className="flex gap-4">
+        <button
+          type="button"
+          onClick={() => onCheckboxChange("male")}
+          className={`flex-1 btn btn-outline h-12 gap-2 ${
+            selectedGender === "male"
+              ? "btn-primary bg-primary/10"
+              : "btn-ghost border-base-content/20"
           }`}
         >
-          <span className="label-text">Male</span>
-          <input
-            type="checkbox"
-            className="checkbox border-slate-900"
-            checked={selectedGender === "male"}
-            onChange={() => onCheckboxChange("male")}
-          />
-        </label>
-      </div>
-      <div className="form-control">
-        <label
-          className={`label gap-2 cursor-pointer ${
-            selectedGender === "female" ? "selected" : ""
+          <FiUser className="w-4 h-4" />
+          Male
+        </button>
+        <button
+          type="button"
+          onClick={() => onCheckboxChange("female")}
+          className={`flex-1 btn btn-outline h-12 gap-2 ${
+            selectedGender === "female"
+              ? "btn-secondary bg-secondary/10"
+              : "btn-ghost border-base-content/20"
           }`}
         >
-          <span className="label-text">Female</span>
-          <input
-            type="checkbox"
-            className="checkbox border-slate-900"
-            checked={selectedGender === "female"}
-            onChange={() => onCheckboxChange("female")}
-          />
-        </label>
+          <FiUser className="w-4 h-4" />
+          Female
+        </button>
       </div>
     </div>
   );
