@@ -80,3 +80,82 @@ export interface ThemeContextType {
   theme: "light" | "dark";
   toggleTheme: () => void;
 }
+
+// Game Types for Werewords
+export type GameRole = "mayor" | "seer" | "werewolf" | "villager";
+export type GameStatus = "lobby" | "night" | "day" | "voting" | "ended";
+export type TokenType = "yes" | "no" | "maybe" | "soClose";
+export type VoteType = "findSeer" | "findWerewolf";
+export type GameWinner = "village" | "werewolf";
+
+export interface TokenCounts {
+  yes: number;
+  no: number;
+  maybe: number;
+  soClose: number;
+}
+
+export interface GameSettings {
+  dayDuration: number;
+  tokenCounts: TokenCounts;
+  wordCategory: string;
+  difficulty: "easy" | "medium" | "hard";
+}
+
+export interface GamePlayer {
+  user: User;
+  role: GameRole | null;
+  isConnected: boolean;
+}
+
+export interface TokenUsage {
+  questionIndex: number;
+  token: TokenType;
+  timestamp: string;
+}
+
+export interface GameQuestion {
+  playerId: User;
+  text: string;
+  response: TokenType | null;
+  isGuess: boolean;
+  timestamp: string;
+}
+
+export interface GameVote {
+  voterId: string;
+  targetId: string;
+  timestamp: string;
+}
+
+export interface Game {
+  _id: string;
+  code: string;
+  host: User;
+  players: GamePlayer[];
+  status: GameStatus;
+  magicWord: string | null;
+  wordOptions: string[];
+  tokens: TokenCounts;
+  tokensUsed: TokenUsage[];
+  questions: GameQuestion[];
+  wordGuessed: boolean;
+  guessedBy: string | null;
+  votes: GameVote[];
+  voteType: VoteType | null;
+  winner: GameWinner | null;
+  settings: GameSettings;
+  dayStartTime: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GameContextType {
+  currentGame: Game | null;
+  setCurrentGame: (
+    game: Game | null | ((prev: Game | null) => Game | null)
+  ) => void;
+  myRole: GameRole | null;
+  setMyRole: (role: GameRole | null) => void;
+  isHost: boolean;
+}

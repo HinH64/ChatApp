@@ -4,6 +4,9 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Home from "./pages/home/Home";
 import Admin from "./pages/admin/Admin";
+import GameMenu from "./pages/game/GameMenu";
+import GameLobby from "./pages/game/GameLobby";
+import GamePlay from "./pages/game/GamePlay";
 import { useAuthContext } from "./context/AuthContext";
 
 function App() {
@@ -20,6 +23,18 @@ function App() {
           element={
             authUser?.role === "admin" ? <Admin /> : <Navigate to="/" />
           }
+        />
+        <Route
+          path="/game"
+          element={authUser ? <GameMenu /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/game/lobby"
+          element={authUser ? <GameLobby /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/game/play"
+          element={authUser ? <GamePlay /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthContextProvider } from "./context/AuthContext";
 import { SocketContextProvider } from "./context/SocketContext";
 import { ThemeContextProvider } from "./context/ThemeContext";
+import { GameContextProvider } from "./context/GameContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeContextProvider>
         <AuthContextProvider>
           <SocketContextProvider>
-            <App />
+            <GameContextProvider>
+              <App />
+            </GameContextProvider>
           </SocketContextProvider>
         </AuthContextProvider>
       </ThemeContextProvider>

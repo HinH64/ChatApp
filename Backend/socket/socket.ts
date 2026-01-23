@@ -2,6 +2,7 @@ import { Server as SocketIOServer } from "socket.io";
 import http from "http";
 import express from "express";
 import User from "../models/user.models.js";
+import { setupGameHandlers } from "./handlers/gameHandlers.js";
 
 const app = express();
 
@@ -14,6 +15,8 @@ const io: SocketIOServer = new SocketIOServer(server, {
 });
 
 const userSocketMap: Record<string, string> = {};
+
+export { userSocketMap };
 
 export const getReceiverSocketId = (receiverId: string): string | undefined => {
   return userSocketMap[receiverId];
@@ -38,6 +41,9 @@ io.on("connection", (socket) => {
 
   // io.emit() is used to send events to all the connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  // Setup game handlers
+  setupGameHandlers(io, socket, userSocketMap);
 
   // socket.on() is used to listen to the events. can be used both on client and server side
   socket.on("disconnect", async () => {
