@@ -92,10 +92,10 @@ const Sidebar = () => {
             <SearchInput />
           </div>
 
-          {/* Conversations header */}
+          {/* Chats header */}
           <div className="px-4 py-3">
             <h2 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
-              Messages
+              Chats
             </h2>
           </div>
 
