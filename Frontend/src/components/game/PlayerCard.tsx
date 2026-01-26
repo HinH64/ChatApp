@@ -1,6 +1,7 @@
 import type { GamePlayer, User } from "../../types";
 import { FaCrown, FaWifi } from "react-icons/fa";
 import { MdSignalWifiOff } from "react-icons/md";
+import Avatar from "../ui/Avatar";
 
 interface PlayerCardProps {
   player: GamePlayer;
@@ -16,14 +17,11 @@ const PlayerCard = ({ player, isHost }: PlayerCardProps) => {
         !player.isConnected ? "opacity-50" : ""
       }`}
     >
-      <div className="avatar">
-        <div className="w-10 rounded-full">
-          <img
-            src={user.profilePic || "/avatar-placeholder.png"}
-            alt={user.fullName}
-          />
-        </div>
-      </div>
+      <Avatar
+        src={user.profilePic}
+        alt={user.fullName}
+        size="md"
+      />
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <span className="font-medium">{user.fullName}</span>

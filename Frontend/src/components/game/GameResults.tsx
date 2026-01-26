@@ -3,6 +3,7 @@ import { FaTrophy, FaHome, FaRedo, FaEye, FaUser } from "react-icons/fa";
 import { GiWolfHead, GiVillage } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
 import type { User, GameRole } from "../../types";
+import Avatar from "../ui/Avatar";
 
 const roleIcons: Record<GameRole, React.ReactNode> = {
   mayor: <FaUser className="text-primary" />,
@@ -96,14 +97,11 @@ const GameResults = () => {
                   key={user._id}
                   className="flex items-center gap-3 p-3 bg-base-300 rounded-lg"
                 >
-                  <div className="avatar">
-                    <div className="w-10 rounded-full">
-                      <img
-                        src={user.profilePic || "/avatar-placeholder.png"}
-                        alt={user.fullName}
-                      />
-                    </div>
-                  </div>
+                  <Avatar
+                    src={user.profilePic}
+                    alt={user.fullName}
+                    size="md"
+                  />
                   <div className="flex-1">
                     <div className="font-medium">{user.fullName}</div>
                     <div className="text-sm text-base-content/60">

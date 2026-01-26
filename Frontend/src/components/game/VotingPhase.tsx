@@ -5,6 +5,7 @@ import { useGameContext } from "../../context/GameContext";
 import { useAuthContext } from "../../context/AuthContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
 import type { User } from "../../types";
+import Avatar from "../ui/Avatar";
 
 const VotingPhase = () => {
   const { currentGame, myRole } = useGameContext();
@@ -111,14 +112,11 @@ const VotingPhase = () => {
                               : "bg-base-300 hover:bg-base-100"
                           }`}
                         >
-                          <div className="avatar">
-                            <div className="w-10 rounded-full">
-                              <img
-                                src={user.profilePic || "/avatar-placeholder.png"}
-                                alt={user.fullName}
-                              />
-                            </div>
-                          </div>
+                          <Avatar
+                            src={user.profilePic}
+                            alt={user.fullName}
+                            size="md"
+                          />
                           <div className="flex-1 text-left">
                             <div className="font-medium">{user.fullName}</div>
                             <div className="text-sm opacity-70">

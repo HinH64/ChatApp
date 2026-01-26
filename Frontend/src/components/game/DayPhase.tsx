@@ -10,6 +10,7 @@ import {
 import { useGameContext } from "../../context/GameContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
 import type { TokenType, GameQuestion, User } from "../../types";
+import Avatar from "../ui/Avatar";
 
 const tokenIcons: Record<TokenType, React.ReactNode> = {
   yes: <FaCheck className="text-success" />,
@@ -240,14 +241,11 @@ const QuestionItem = ({
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className="avatar">
-          <div className="w-8 rounded-full">
-            <img
-              src={player.profilePic || "/avatar-placeholder.png"}
-              alt={player.fullName}
-            />
-          </div>
-        </div>
+        <Avatar
+          src={player.profilePic}
+          alt={player.fullName}
+          size="sm"
+        />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="font-medium">{player.fullName}</span>
