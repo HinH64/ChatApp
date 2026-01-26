@@ -1,12 +1,34 @@
 import { useState } from "react";
-import { FaVoteYea, FaCheck } from "react-icons/fa";
+import {
+  FaVoteYea,
+  FaCheck,
+  FaTimes,
+  FaQuestion,
+  FaFire,
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
 import { GiWolfHead } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
 import { useAuthContext } from "../../context/AuthContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
 import ExitGameButton from "./ExitGameButton";
-import type { User } from "../../types";
+import type { User, TokenType, GameQuestion } from "../../types";
 import Avatar from "../ui/Avatar";
+
+const tokenIcons: Record<TokenType, React.ReactNode> = {
+  yes: <FaCheck className="text-success" />,
+  no: <FaTimes className="text-error" />,
+  maybe: <FaQuestion className="text-warning" />,
+  soClose: <FaFire className="text-info" />,
+};
+
+const tokenLabels: Record<TokenType, string> = {
+  yes: "Yes",
+  no: "No",
+  maybe: "Maybe",
+  soClose: "So Close!",
+};
 
 const VotingPhase = () => {
   const { currentGame, myRole } = useGameContext();
@@ -14,6 +36,7 @@ const VotingPhase = () => {
   const { castVote } = useGameSocket();
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   if (!currentGame) {
     return (
@@ -170,6 +193,65 @@ const VotingPhase = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Questions History */}
+      {currentGame.questions.length > 0 && (
+        <div className="card bg-base-200 w-full max-w-lg mt-4">
+          <div className="card-body p-4">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="flex items-center justify-between w-full"
+            >
+              <h3 className="font-bold">
+                Questions History ({currentGame.questions.length})
+              </h3>
+              {showHistory ? <FaChevronUp /> : <FaChevronDown />}
+            </button>
+
+            {showHistory && (
+              <div className="mt-4 space-y-3 max-h-64 overflow-y-auto">
+                {currentGame.questions.map((q, index) => (
+                  <QuestionHistoryItem key={index} question={q} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Read-only question history item
+const QuestionHistoryItem = ({ question }: { question: GameQuestion }) => {
+  const player = question.playerId as User;
+
+  return (
+    <div
+      className={`p-3 rounded-lg ${
+        question.isGuess ? "bg-primary/20 border border-primary" : "bg-base-300"
+      }`}
+    >
+      <div className="flex items-start gap-2">
+        <Avatar src={player.profilePic} alt={player.fullName} size="sm" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-medium text-sm">{player.fullName}</span>
+            {question.isGuess && (
+              <span className="badge badge-primary badge-xs">GUESS</span>
+            )}
+          </div>
+          <p className="text-sm">{question.text}</p>
+        </div>
+
+        {/* Response */}
+        {question.response && (
+          <div className="flex items-center gap-1 text-sm shrink-0">
+            {tokenIcons[question.response]}
+            <span className="font-medium">{tokenLabels[question.response]}</span>
+          </div>
+        )}
       </div>
     </div>
   );
