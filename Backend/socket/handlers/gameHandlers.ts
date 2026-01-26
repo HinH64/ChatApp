@@ -1,4 +1,5 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
+import mongoose from "mongoose";
 import Game from "../../models/game.model.js";
 import User from "../../models/user.models.js";
 import { getRandomWordOptions } from "../../data/wordLists.js";
@@ -559,12 +560,12 @@ export const setupGameHandlers = (
 
         if (existingVote) {
           // Update vote
-          existingVote.targetId = new (require("mongoose").Types.ObjectId)(targetId);
+          existingVote.targetId = new mongoose.Types.ObjectId(targetId);
           existingVote.timestamp = new Date();
         } else {
           game.votes.push({
             voterId: player.user,
-            targetId: new (require("mongoose").Types.ObjectId)(targetId),
+            targetId: new mongoose.Types.ObjectId(targetId),
             timestamp: new Date(),
           });
         }
