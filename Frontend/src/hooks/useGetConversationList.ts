@@ -1,34 +1,17 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import type { User, ApiError } from "../types";
+import { useEffect } from "react";
+import useConversationList from "../zustand/useConversationList";
 
 const useGetConversationList = () => {
-  const [loading, setLoading] = useState(false);
-  const [conversationList, setConversationList] = useState<User[]>([]);
+  const { loading, conversationList, fetchConversationList, lastFetched } = useConversationList();
 
   useEffect(() => {
-    const getConversationList = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/users");
-        const data: User[] & ApiError = await res.json();
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        setConversationList(data as User[]);
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Fetch if we haven't fetched yet
+    if (lastFetched === null) {
+      fetchConversationList();
+    }
+  }, [lastFetched, fetchConversationList]);
 
-    getConversationList();
-  }, []);
-
-  return { loading, conversationList };
+  return { loading, conversationList, refetch: fetchConversationList };
 };
 
 export default useGetConversationList;

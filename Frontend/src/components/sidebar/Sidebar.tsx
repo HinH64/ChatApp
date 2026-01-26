@@ -7,14 +7,16 @@ import ThemeToggle from "../ui/ThemeToggle";
 import ProfileModal from "../profile/ProfileModal";
 import { useState, useEffect } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { FiMessageCircle } from "react-icons/fi";
+import { FiMessageCircle, FiRefreshCw } from "react-icons/fi";
 import useConversation from "../../zustand/useConversation";
+import useConversationList from "../../zustand/useConversationList";
 
 const Sidebar = () => {
   const { authUser } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { selectedConversation } = useConversation();
+  const { fetchConversationList, loading: refreshing } = useConversationList();
 
   // Close sidebar when a conversation is selected (mobile only)
   useEffect(() => {
@@ -92,11 +94,19 @@ const Sidebar = () => {
             <SearchInput />
           </div>
 
-          {/* Chats header */}
-          <div className="px-4 py-3">
+          {/* Chats header with refresh button */}
+          <div className="px-4 py-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
               Chats
             </h2>
+            <button
+              onClick={() => fetchConversationList()}
+              disabled={refreshing}
+              className="btn btn-ghost btn-xs btn-circle text-base-content/50 hover:text-primary"
+              title="Refresh users"
+            >
+              <FiRefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
           </div>
 
           {/* Conversation list */}
