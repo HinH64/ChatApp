@@ -9,7 +9,7 @@ const GenderCheckbox = ({ onCheckboxChange, selectedGender }: GenderCheckboxProp
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text font-medium">Gender</span>
+        <span className="label-text font-medium">Gender <span className="text-base-content/50 font-normal">(optional)</span></span>
       </label>
       <div className="flex gap-4">
         <button

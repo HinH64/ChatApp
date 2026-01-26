@@ -44,14 +44,12 @@ function handleInputErrors({
   username,
   password,
   confirmPassword,
-  gender,
 }: SignupInputs): boolean {
   if (
     fullName === "" ||
     username === "" ||
     password === "" ||
-    confirmPassword === "" ||
-    gender === ""
+    confirmPassword === ""
   ) {
     toast.error("Please fill in all fields");
     return false;

@@ -30,7 +30,7 @@ export const signup = async (
       fullName,
       username,
       password: hashedPassword,
-      gender,
+      ...(gender && { gender }),
       profilePic: "", // Frontend Avatar component handles fallback with initials
     });
 

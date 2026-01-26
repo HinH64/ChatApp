@@ -7,7 +7,7 @@ export interface User {
   fullName: string;
   username: string;
   profilePic: string;
-  gender: "male" | "female";
+  gender?: "male" | "female";
   role: UserRole;
   email?: string;
   bio?: string;
@@ -69,7 +69,7 @@ export interface SignupInputs {
   username: string;
   password: string;
   confirmPassword: string;
-  gender: string;
+  gender?: string;
 }
 
 export interface ApiError {

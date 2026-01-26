@@ -8,7 +8,7 @@ export interface IUser extends Document {
   fullName: string;
   username: string;
   password: string;
-  gender: "male" | "female";
+  gender?: "male" | "female";
   profilePic: string;
   email?: string;
   bio: string;
@@ -61,7 +61,7 @@ export interface SignupBody {
   username: string;
   password: string;
   confirmPassword: string;
-  gender: "male" | "female";
+  gender?: "male" | "female";
 }
 
 export interface LoginBody {
