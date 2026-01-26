@@ -64,6 +64,13 @@ export interface ConversationState {
   setMessages: (messages: Message[]) => void;
 }
 
+export type RightPanelView = "chat" | "game" | "admin";
+
+export interface RightPanelState {
+  currentView: RightPanelView;
+  setCurrentView: (view: RightPanelView) => void;
+}
+
 export interface SignupInputs {
   fullName: string;
   username: string;

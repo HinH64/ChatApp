@@ -1,11 +1,11 @@
 import Sidebar from "../../components/sidebar/Sidebar";
-import MessageContainer from "../../components/messages/MessageContainer";
+import RightPanel from "../../components/panels/RightPanel";
 
 const Home = () => {
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <Sidebar />
-      <MessageContainer />
+      <RightPanel />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import useConversation from "../../zustand/useConversation";
+import useRightPanel from "../../zustand/useRightPanel";
 import { useSocketContext } from "../../context/SocketContext";
 import type { User } from "../../types";
 import { formatLastSeen } from "../../utils/formatLastSeen";
@@ -10,9 +11,15 @@ interface ConversationProps {
 
 const Conversation = ({ conversation }: ConversationProps) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
+  const { setCurrentView } = useRightPanel();
   const isSelected = selectedConversation?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(conversation._id);
+
+  const handleSelect = () => {
+    setSelectedConversation(conversation);
+    setCurrentView("chat");
+  };
 
   return (
     <div
@@ -21,7 +28,7 @@ const Conversation = ({ conversation }: ConversationProps) => {
           ? "bg-primary/15 border border-primary/30"
           : "hover:bg-base-200/80 border border-transparent"
       }`}
-      onClick={() => setSelectedConversation(conversation)}
+      onClick={handleSelect}
     >
       {/* Avatar */}
       <Avatar

@@ -1,13 +1,23 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
 import "./App.css";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Home from "./pages/home/Home";
-import Admin from "./pages/admin/Admin";
-import GameMenu from "./pages/game/GameMenu";
-import GameLobby from "./pages/game/GameLobby";
-import GamePlay from "./pages/game/GamePlay";
 import { useAuthContext } from "./context/AuthContext";
+import useRightPanel from "./zustand/useRightPanel";
+import type { RightPanelView } from "./types";
+
+// Component that redirects to home while setting the right panel view
+const RedirectWithView = ({ view }: { view: RightPanelView }) => {
+  const { setCurrentView } = useRightPanel();
+
+  useEffect(() => {
+    setCurrentView(view);
+  }, [view, setCurrentView]);
+
+  return <Navigate to="/" replace />;
+};
 
 function App() {
   const { authUser } = useAuthContext();
@@ -21,20 +31,20 @@ function App() {
         <Route
           path="/admin"
           element={
-            authUser?.role === "admin" ? <Admin /> : <Navigate to="/" />
+            authUser?.role === "admin" ? <RedirectWithView view="admin" /> : <Navigate to="/" />
           }
         />
         <Route
           path="/game"
-          element={authUser ? <GameMenu /> : <Navigate to="/login" />}
+          element={authUser ? <RedirectWithView view="game" /> : <Navigate to="/login" />}
         />
         <Route
           path="/game/lobby"
-          element={authUser ? <GameLobby /> : <Navigate to="/login" />}
+          element={authUser ? <RedirectWithView view="game" /> : <Navigate to="/login" />}
         />
         <Route
           path="/game/play"
-          element={authUser ? <GamePlay /> : <Navigate to="/login" />}
+          element={authUser ? <RedirectWithView view="game" /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

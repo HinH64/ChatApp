@@ -9,14 +9,15 @@ import { useState, useEffect } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { FiMessageCircle, FiShield } from "react-icons/fi";
 import { FaGamepad } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import useConversation from "../../zustand/useConversation";
+import useRightPanel from "../../zustand/useRightPanel";
 
 const Sidebar = () => {
   const { authUser } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { selectedConversation } = useConversation();
+  const { selectedConversation, setSelectedConversation } = useConversation();
+  const { currentView, setCurrentView } = useRightPanel();
 
   // Close sidebar when a conversation is selected (mobile only)
   useEffect(() => {
@@ -74,21 +75,29 @@ const Sidebar = () => {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <Link
-                  to="/game"
-                  className="btn btn-ghost btn-sm btn-circle"
+                <button
+                  onClick={() => {
+                    setSelectedConversation(null);
+                    setCurrentView("game");
+                    setIsOpen(false);
+                  }}
+                  className={`btn btn-ghost btn-sm btn-circle ${currentView === "game" ? "bg-secondary/20" : ""}`}
                   title="Werewords Game"
                 >
-                  <FaGamepad className="w-5 h-5 text-secondary" />
-                </Link>
+                  <FaGamepad className={`w-5 h-5 ${currentView === "game" ? "text-secondary" : "text-secondary/70"}`} />
+                </button>
                 {authUser?.role === "admin" && (
-                  <Link
-                    to="/admin"
-                    className="btn btn-ghost btn-sm btn-circle"
+                  <button
+                    onClick={() => {
+                      setSelectedConversation(null);
+                      setCurrentView("admin");
+                      setIsOpen(false);
+                    }}
+                    className={`btn btn-ghost btn-sm btn-circle ${currentView === "admin" ? "bg-primary/20" : ""}`}
                     title="Admin Panel"
                   >
-                    <FiShield className="w-5 h-5 text-primary" />
-                  </Link>
+                    <FiShield className={`w-5 h-5 ${currentView === "admin" ? "text-primary" : "text-primary/70"}`} />
+                  </button>
                 )}
                 <ThemeToggle />
               </div>

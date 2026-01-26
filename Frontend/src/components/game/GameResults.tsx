@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrophy, FaHome, FaRedo, FaEye, FaUser } from "react-icons/fa";
 import { GiWolfHead, GiVillage } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
+import useRightPanel from "../../zustand/useRightPanel";
 import type { User, GameRole } from "../../types";
 import Avatar from "../ui/Avatar";
 
@@ -12,9 +13,14 @@ const roleIcons: Record<GameRole, React.ReactNode> = {
   villager: <FaUser className="text-success" />,
 };
 
-const GameResults = () => {
+interface GameResultsProps {
+  onReturnToMenu?: () => void;
+}
+
+const GameResults = ({ onReturnToMenu }: GameResultsProps) => {
   const navigate = useNavigate();
   const { currentGame, setCurrentGame, setMyRole } = useGameContext();
+  const { setCurrentView } = useRightPanel();
 
   if (!currentGame) {
     return (
@@ -30,13 +36,21 @@ const GameResults = () => {
     // Reset game state and go back to menu
     setCurrentGame(null);
     setMyRole(null);
-    navigate("/game");
+    if (onReturnToMenu) {
+      onReturnToMenu();
+    } else {
+      navigate("/game");
+    }
   };
 
   const handleGoHome = () => {
     setCurrentGame(null);
     setMyRole(null);
-    navigate("/");
+    if (onReturnToMenu) {
+      setCurrentView("chat");
+    } else {
+      navigate("/");
+    }
   };
 
   return (
