@@ -3,6 +3,7 @@ import { FaMoon, FaEye, FaUserSecret, FaUser } from "react-icons/fa";
 import { GiWolfHead } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
+import ExitGameButton from "./ExitGameButton";
 import type { GameRole } from "../../types";
 
 const roleInfo: Record<
@@ -60,7 +61,12 @@ const NightPhase = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-300 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-base-300 flex flex-col items-center justify-center p-4 relative">
+      {/* Exit Button */}
+      <div className="absolute top-4 right-4">
+        <ExitGameButton />
+      </div>
+
       {/* Night Header */}
       <div className="text-center mb-8">
         <FaMoon className="text-6xl text-yellow-300 mx-auto mb-4" />

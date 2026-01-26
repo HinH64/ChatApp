@@ -97,8 +97,8 @@ const GameMenuPanel = () => {
               </button>
             ) : (
               <form onSubmit={handleJoinGame} className="space-y-4">
-                <div className="form-control">
-                  <label className="label">
+                <div className="form-control w-full">
+                  <label className="label px-0">
                     <span className="label-text">Enter Room Code</span>
                   </label>
                   <input
@@ -107,7 +107,7 @@ const GameMenuPanel = () => {
                     value={roomCode}
                     onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                     maxLength={4}
-                    className="input input-bordered input-lg text-center font-mono tracking-widest"
+                    className="input input-bordered input-lg w-full text-center font-mono tracking-widest"
                     autoFocus
                   />
                 </div>

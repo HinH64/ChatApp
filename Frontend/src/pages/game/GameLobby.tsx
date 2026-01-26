@@ -11,7 +11,7 @@ import type { GameSettings as GameSettingsType } from "../../types";
 const GameLobby = () => {
   const navigate = useNavigate();
   const { currentGame, isHost } = useGameContext();
-  const { joinGameRoom, leaveGameRoom, startGame } = useGameSocket();
+  const { joinGameRoom, leaveGameRoom, startGame, updateSettings } = useGameSocket();
 
   useEffect(() => {
     if (currentGame) {
@@ -47,27 +47,9 @@ const GameLobby = () => {
     }
   };
 
-  const handleSettingsChange = async (settings: Partial<GameSettingsType>) => {
+  const handleSettingsChange = (settings: Partial<GameSettingsType>) => {
     if (!currentGame || !isHost) return;
-
-    try {
-      const res = await fetch(`/api/games/${currentGame.code}/settings`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ settings }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to update settings");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    }
+    updateSettings(currentGame.code, settings);
   };
 
   const handleLeave = async () => {

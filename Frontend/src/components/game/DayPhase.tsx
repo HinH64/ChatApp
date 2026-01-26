@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { useGameContext } from "../../context/GameContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
+import ExitGameButton from "./ExitGameButton";
 import type { TokenType, GameQuestion, User } from "../../types";
 import Avatar from "../ui/Avatar";
 
@@ -100,6 +101,7 @@ const DayPhase = () => {
       <div className="bg-base-200 p-4 shadow-md">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
+            <ExitGameButton />
             <FaSun className="text-2xl text-yellow-500" />
             <h1 className="text-xl font-bold">Day Phase</h1>
           </div>

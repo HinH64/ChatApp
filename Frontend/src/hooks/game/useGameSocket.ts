@@ -141,6 +141,16 @@ const useGameSocket = () => {
     [socket]
   );
 
+  // Update game settings (host only)
+  const updateSettings = useCallback(
+    (gameCode: string, settings: Partial<{ dayDuration: number; difficulty: string; wordCategory: string }>) => {
+      if (socket) {
+        socket.emit("game:updateSettings", { gameCode, settings });
+      }
+    },
+    [socket]
+  );
+
   // Set up event listeners
   useEffect(() => {
     if (!socket) return;
@@ -233,6 +243,11 @@ const useGameSocket = () => {
       setCurrentGame(data.game);
     });
 
+    // Settings updated
+    socket.on("game:settingsUpdated", (data: { game: Game }) => {
+      setCurrentGame(data.game);
+    });
+
     // Error
     socket.on("game:error", (data: { message: string }) => {
       console.error("Game error:", data.message);
@@ -251,6 +266,7 @@ const useGameSocket = () => {
       socket.off("game:votingStart");
       socket.off("game:voteCast");
       socket.off("game:gameOver");
+      socket.off("game:settingsUpdated");
       socket.off("game:error");
     };
   }, [socket, setCurrentGame, setMyRole]);
@@ -264,6 +280,7 @@ const useGameSocket = () => {
     respondWithToken,
     triggerTimeUp,
     castVote,
+    updateSettings,
   };
 };
 

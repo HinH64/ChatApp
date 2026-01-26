@@ -4,6 +4,7 @@ import { GiWolfHead } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
 import { useAuthContext } from "../../context/AuthContext";
 import useGameSocket from "../../hooks/game/useGameSocket";
+import ExitGameButton from "./ExitGameButton";
 import type { User } from "../../types";
 import Avatar from "../ui/Avatar";
 
@@ -48,7 +49,12 @@ const VotingPhase = () => {
   );
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-base-100 flex flex-col items-center justify-center p-4 relative">
+      {/* Exit Button */}
+      <div className="absolute top-4 right-4">
+        <ExitGameButton />
+      </div>
+
       {/* Header */}
       <div className="text-center mb-8">
         <FaVoteYea className="text-6xl text-primary mx-auto mb-4" />

@@ -607,6 +607,50 @@ export const setupGameHandlers = (
     }
   );
 
+  // Update game settings (host only)
+  socket.on(
+    "game:updateSettings",
+    async (data: { gameCode: string; settings: Partial<IGame["settings"]> }) => {
+      try {
+        const { gameCode, settings } = data;
+        const game = await Game.findOne({ code: gameCode.toUpperCase() });
+
+        if (!game) {
+          socket.emit("game:error", { message: "Game not found" });
+          return;
+        }
+
+        if (game.host.toString() !== userId) {
+          socket.emit("game:error", { message: "Only host can update settings" });
+          return;
+        }
+
+        if (game.status !== "lobby") {
+          socket.emit("game:error", { message: "Cannot update settings after game started" });
+          return;
+        }
+
+        // Update settings
+        game.settings = { ...game.settings, ...settings };
+        game.tokens = { ...game.settings.tokenCounts };
+
+        await game.save();
+
+        const populatedGame = await Game.findById(game._id)
+          .populate("players.user", "fullName username profilePic")
+          .populate("host", "fullName username profilePic");
+
+        // Broadcast updated game state to all players in the lobby
+        io.to(gameCode.toUpperCase()).emit("game:settingsUpdated", {
+          game: getPublicGameState(populatedGame!, userId),
+        });
+      } catch (error) {
+        console.error("Error updating settings:", error);
+        socket.emit("game:error", { message: "Failed to update settings" });
+      }
+    }
+  );
+
   // Handle disconnect for game
   socket.on("disconnect", async () => {
     const gameCode = socketGameMap[socket.id];
