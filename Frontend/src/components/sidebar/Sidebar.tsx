@@ -7,17 +7,14 @@ import ThemeToggle from "../ui/ThemeToggle";
 import ProfileModal from "../profile/ProfileModal";
 import { useState, useEffect } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { FiMessageCircle, FiShield } from "react-icons/fi";
-import { FaGamepad } from "react-icons/fa";
+import { FiMessageCircle } from "react-icons/fi";
 import useConversation from "../../zustand/useConversation";
-import useRightPanel from "../../zustand/useRightPanel";
 
 const Sidebar = () => {
   const { authUser } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { selectedConversation, setSelectedConversation } = useConversation();
-  const { currentView, setCurrentView } = useRightPanel();
+  const { selectedConversation } = useConversation();
 
   // Close sidebar when a conversation is selected (mobile only)
   useEffect(() => {
@@ -36,9 +33,9 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile hamburger button */}
+      {/* Mobile hamburger button - positioned after NavBar (left-20 = 5rem = NavBar width + padding) */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 btn btn-circle btn-ghost bg-base-100/90 backdrop-blur-sm shadow-lg border border-base-300"
+        className="lg:hidden fixed top-4 left-20 z-50 btn btn-circle btn-ghost bg-base-100/90 backdrop-blur-sm shadow-lg border border-base-300"
         onClick={toggleSidebar}
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
@@ -54,9 +51,9 @@ const Sidebar = () => {
         />
       )}
 
-      {/* Sidebar panel */}
+      {/* Sidebar panel - on mobile, position after NavBar (left-16 = 4rem = NavBar width) */}
       <div
-        className={`w-80 lg:w-80 fixed lg:static top-0 left-0 z-40 bg-base-100 h-full transition-transform duration-300 ease-out shadow-2xl lg:shadow-none flex-shrink-0 ${
+        className={`w-80 lg:w-80 fixed lg:static top-0 left-16 lg:left-0 z-40 bg-base-100 h-full transition-transform duration-300 ease-out shadow-2xl lg:shadow-none flex-shrink-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -74,33 +71,7 @@ const Sidebar = () => {
                   <p className="text-xs text-base-content/50">Stay connected</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    setSelectedConversation(null);
-                    setCurrentView("game");
-                    setIsOpen(false);
-                  }}
-                  className={`btn btn-ghost btn-sm btn-circle ${currentView === "game" ? "bg-secondary/20" : ""}`}
-                  title="Werewords Game"
-                >
-                  <FaGamepad className={`w-5 h-5 ${currentView === "game" ? "text-secondary" : "text-secondary/70"}`} />
-                </button>
-                {authUser?.role === "admin" && (
-                  <button
-                    onClick={() => {
-                      setSelectedConversation(null);
-                      setCurrentView("admin");
-                      setIsOpen(false);
-                    }}
-                    className={`btn btn-ghost btn-sm btn-circle ${currentView === "admin" ? "bg-primary/20" : ""}`}
-                    title="Admin Panel"
-                  >
-                    <FiShield className={`w-5 h-5 ${currentView === "admin" ? "text-primary" : "text-primary/70"}`} />
-                  </button>
-                )}
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
             </div>
 
             {/* User info card */}
