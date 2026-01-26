@@ -24,7 +24,8 @@ export const SocketContextProvider = ({ children }: SocketContextProviderProps) 
 
   useEffect(() => {
     if (authUser) {
-      const newSocket = io("https://chatapp-qmmc.onrender.com", {
+      const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:8000";
+      const newSocket = io(socketUrl, {
         query: {
           userId: authUser._id,
         },

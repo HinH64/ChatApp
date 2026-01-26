@@ -9,8 +9,9 @@ const app = express();
 const server = http.createServer(app);
 const io: SocketIOServer = new SocketIOServer(server, {
   cors: {
-    origin: [process.env.VITE_SOCKET_IO_URL as string],
+    origin: ["http://localhost:3000", "http://localhost:5173", process.env.VITE_SOCKET_IO_URL as string],
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
