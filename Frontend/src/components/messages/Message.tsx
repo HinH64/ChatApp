@@ -6,49 +6,68 @@ import Avatar from "../ui/Avatar";
 
 interface MessageProps {
   message: MessageType;
+  showAvatar?: boolean;
+  isFirstInGroup?: boolean;
+  isLastInGroup?: boolean;
 }
 
-const Message = ({ message }: MessageProps) => {
+const Message = ({
+  message,
+  showAvatar = true,
+  isFirstInGroup = true,
+  isLastInGroup = true
+}: MessageProps) => {
   const { authUser } = useAuthContext();
   const { selectedConversation } = useConversation();
   const fromMe = message.senderId === authUser?._id;
   const formattedTime = extractTime(message.createdAt);
-  const profilePic = fromMe
-    ? authUser?.profilePic
-    : selectedConversation?.profilePic;
-  const shakeClass = message.shouldShake ? "animate-shake" : "";
+  const profilePic = selectedConversation?.profilePic;
+  const shakeClass = message.shouldShake ? "shake" : "";
 
-  const displayName = fromMe
-    ? authUser?.fullName || "Me"
-    : selectedConversation?.fullName || "User";
+  const displayName = selectedConversation?.fullName || "User";
 
   return (
-    <div className={`flex items-end gap-2 mb-3 ${fromMe ? "flex-row-reverse" : ""}`}>
-      {/* Avatar */}
-      <Avatar
-        src={profilePic}
-        alt={displayName}
-        size="sm"
-      />
-
-      {/* Message bubble */}
-      <div className={`max-w-[70%] ${fromMe ? "items-end" : "items-start"}`}>
-        <div
-          className={`px-4 py-2.5 rounded-2xl ${shakeClass} ${
-            fromMe
-              ? "bg-primary text-primary-content rounded-br-md"
-              : "bg-base-100 text-base-content rounded-bl-md shadow-sm"
-          }`}
-        >
-          <p className="text-sm whitespace-pre-wrap break-words">{message.message}</p>
+    <div className={isLastInGroup ? "mb-4" : "mb-1"}>
+      {/* Name and timestamp - show on first message in group */}
+      {isFirstInGroup && (
+        <div className={`flex items-center gap-2 mb-1 ${fromMe ? "justify-end pr-1" : "pl-10"}`}>
+          {!fromMe && (
+            <span className="text-xs font-medium text-base-content/70">
+              {displayName}
+            </span>
+          )}
+          <span className="text-xs text-base-content/40">
+            {formattedTime}
+          </span>
         </div>
-        <p
-          className={`text-xs text-base-content/40 mt-1 px-1 ${
-            fromMe ? "text-right" : "text-left"
+      )}
+
+      {/* Message row with avatar */}
+      <div className={`flex items-end gap-2 ${fromMe ? "justify-end" : ""}`}>
+        {/* Avatar - only show for received messages */}
+        {!fromMe && (
+          <div className={`w-8 flex-shrink-0 ${isFirstInGroup ? "" : "invisible"}`}>
+            <Avatar
+              src={profilePic}
+              alt={displayName}
+              size="sm"
+            />
+          </div>
+        )}
+
+        {/* Message bubble */}
+        <div
+          className={`inline-block px-3 py-2 rounded-lg ${shakeClass} ${
+            fromMe
+              ? "bg-primary text-primary-content"
+              : "bg-base-200/80 text-base-content"
           }`}
+          style={{ maxWidth: "70%" }}
         >
-          {formattedTime}
-        </p>
+          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
+            {message.message}
+          </p>
+        </div>
       </div>
     </div>
   );

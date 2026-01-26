@@ -50,7 +50,16 @@
   -webkit-backdrop-filter: blur(4px);
 }
 
-/* Improved scrollbar styling */
+/* Improved scrollbar styling - auto-hide like Teams */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-thin:hover {
+  scrollbar-color: oklch(0.5 0 0 / 0.3) transparent;
+}
+
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;
 }
@@ -60,8 +69,13 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: oklch(0.5 0 0 / 0.3);
+  background: transparent;
   border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  background: oklch(0.5 0 0 / 0.3);
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
@@ -101,4 +115,93 @@
 
 .zoom-in-95 {
   animation-name: zoomIn;
+}
+
+/* Message bubble animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+/* Typing indicator animation */
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+.typing-dot {
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* Message hover effect */
+.message-bubble {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.message-bubble:hover {
+  transform: translateY(-1px);
+}
+
+/* Smooth input focus */
+.message-input-wrapper {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.message-input-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgba(var(--p) / 0.1);
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button,
+textarea::-webkit-inner-spin-button,
+textarea::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide textarea resize handle and scrollbar spinners */
+textarea {
+  -moz-appearance: textfield;
+}
+
+textarea::-webkit-resizer {
+  display: none;
 }
