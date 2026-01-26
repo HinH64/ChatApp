@@ -45,7 +45,10 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     []
   );
 
-  const isHost = currentGame?.host._id === authUser?._id;
+  const hostId = typeof currentGame?.host === 'string'
+    ? currentGame.host
+    : currentGame?.host?._id;
+  const isHost = hostId === authUser?._id;
 
   return (
     <GameContext.Provider

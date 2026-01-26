@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrophy, FaHome, FaRedo, FaEye, FaUser } from "react-icons/fa";
 import { GiWolfHead, GiVillage } from "react-icons/gi";
 import { useGameContext } from "../../context/GameContext";
+import useGameSocket from "../../hooks/game/useGameSocket";
 import useRightPanel from "../../zustand/useRightPanel";
 import type { User, GameRole } from "../../types";
 import Avatar from "../ui/Avatar";
@@ -19,7 +20,8 @@ interface GameResultsProps {
 
 const GameResults = ({ onReturnToMenu }: GameResultsProps) => {
   const navigate = useNavigate();
-  const { currentGame, setCurrentGame, setMyRole } = useGameContext();
+  const { currentGame, setCurrentGame, setMyRole, isHost } = useGameContext();
+  const { restartGame } = useGameSocket();
   const { setCurrentView } = useRightPanel();
 
   if (!currentGame) {
@@ -40,6 +42,12 @@ const GameResults = ({ onReturnToMenu }: GameResultsProps) => {
       onReturnToMenu();
     } else {
       navigate("/game");
+    }
+  };
+
+  const handleRestartGame = () => {
+    if (currentGame) {
+      restartGame(currentGame.code);
     }
   };
 
@@ -151,12 +159,17 @@ const GameResults = ({ onReturnToMenu }: GameResultsProps) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         <button onClick={handleGoHome} className="btn btn-outline gap-2">
           <FaHome /> Home
         </button>
-        <button onClick={handlePlayAgain} className="btn btn-primary gap-2">
-          <FaRedo /> Play Again
+        {isHost && (
+          <button onClick={handleRestartGame} className="btn btn-primary gap-2">
+            <FaRedo /> Restart Game
+          </button>
+        )}
+        <button onClick={handlePlayAgain} className="btn btn-ghost gap-2">
+          Leave
         </button>
       </div>
     </div>

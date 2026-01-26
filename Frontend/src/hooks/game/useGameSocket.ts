@@ -151,28 +151,64 @@ const useGameSocket = () => {
     [socket]
   );
 
+  // Restart game (host only)
+  const restartGame = useCallback(
+    (gameCode: string) => {
+      if (socket) {
+        socket.emit("game:restart", { gameCode });
+      }
+    },
+    [socket]
+  );
+
   // Set up event listeners
   useEffect(() => {
     if (!socket) return;
 
     // Game state update
     socket.on("game:state", (data: { game: Game }) => {
-      setCurrentGame(data.game);
+      setCurrentGame((prev) => {
+        if (!prev) return data.game;
+        // Preserve wordOptions if we already have them (mayor's perspective)
+        return {
+          ...data.game,
+          wordOptions: data.game.wordOptions?.length > 0 ? data.game.wordOptions : prev.wordOptions,
+        };
+      });
     });
 
     // Player joined
     socket.on("game:playerJoined", (data: PlayerEventPayload) => {
-      setCurrentGame(data.game);
+      setCurrentGame((prev) => {
+        if (!prev) return data.game;
+        // Preserve wordOptions if we already have them (mayor's perspective)
+        return {
+          ...data.game,
+          wordOptions: data.game.wordOptions?.length > 0 ? data.game.wordOptions : prev.wordOptions,
+        };
+      });
     });
 
     // Player left
     socket.on("game:playerLeft", (data: PlayerEventPayload) => {
-      setCurrentGame(data.game);
+      setCurrentGame((prev) => {
+        if (!prev) return data.game;
+        return {
+          ...data.game,
+          wordOptions: data.game.wordOptions?.length > 0 ? data.game.wordOptions : prev.wordOptions,
+        };
+      });
     });
 
     // Player disconnected
     socket.on("game:playerDisconnected", (data: PlayerEventPayload) => {
-      setCurrentGame(data.game);
+      setCurrentGame((prev) => {
+        if (!prev) return data.game;
+        return {
+          ...data.game,
+          wordOptions: data.game.wordOptions?.length > 0 ? data.game.wordOptions : prev.wordOptions,
+        };
+      });
     });
 
     // Game started
@@ -248,6 +284,12 @@ const useGameSocket = () => {
       setCurrentGame(data.game);
     });
 
+    // Game restarted
+    socket.on("game:restarted", (data: { game: Game }) => {
+      setCurrentGame(data.game);
+      setMyRole(null);
+    });
+
     // Error
     socket.on("game:error", (data: { message: string }) => {
       console.error("Game error:", data.message);
@@ -267,6 +309,7 @@ const useGameSocket = () => {
       socket.off("game:voteCast");
       socket.off("game:gameOver");
       socket.off("game:settingsUpdated");
+      socket.off("game:restarted");
       socket.off("game:error");
     };
   }, [socket, setCurrentGame, setMyRole]);
@@ -281,6 +324,7 @@ const useGameSocket = () => {
     triggerTimeUp,
     castVote,
     updateSettings,
+    restartGame,
   };
 };
 

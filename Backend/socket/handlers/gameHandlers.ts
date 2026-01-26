@@ -26,11 +26,47 @@ const getGameSocketIds = (
   return socketIds;
 };
 
+// Helper to get user ID from potentially populated user field
+const getUserId = (user: any): string => {
+  if (!user) return "";
+  if (typeof user === "string") return user;
+  // Handle ObjectId directly
+  if (user._id) {
+    // Handle nested _id (in case _id is also an ObjectId)
+    if (typeof user._id === "object" && user._id.toString) {
+      return user._id.toString();
+    }
+    return String(user._id);
+  }
+  // user is likely an ObjectId
+  if (typeof user === "object" && user.toString) {
+    return user.toString();
+  }
+  return String(user);
+};
+
 // Helper to get public game state (without sensitive info)
 const getPublicGameState = (game: IGame, userId?: string) => {
-  const player = game.players.find(
-    (p) => p.user.toString() === userId?.toString()
-  );
+  const normalizedUserId = userId ? String(userId).trim() : "";
+
+  const player = game.players.find((p) => {
+    const playerId = getUserId(p.user);
+    return playerId === normalizedUserId;
+  });
+
+  // Debug logging for day phase only
+  if (game.status === "day") {
+    console.log("=== getPublicGameState DEBUG (day phase) ===");
+    console.log("userId to match:", normalizedUserId, "length:", normalizedUserId.length);
+    game.players.forEach((p, i) => {
+      const pUserId = getUserId(p.user);
+      console.log(`  Player ${i}: id=${pUserId}, length=${pUserId.length}, match=${pUserId === normalizedUserId}, role=${p.role}`);
+    });
+    console.log("Player found:", !!player, "role:", player?.role);
+    console.log("magicWord:", game.magicWord);
+    console.log("shouldRevealWord:", shouldRevealWord(game, player?.role, game.status));
+    console.log("=============================================");
+  }
 
   return {
     _id: game._id,
@@ -40,7 +76,7 @@ const getPublicGameState = (game: IGame, userId?: string) => {
       user: p.user,
       isConnected: p.isConnected,
       // Only reveal role to the player themselves, or after game ends
-      role: game.status === "ended" || p.user.toString() === userId?.toString()
+      role: game.status === "ended" || getUserId(p.user) === normalizedUserId
         ? p.role
         : null,
     })),
@@ -116,7 +152,7 @@ export const setupGameHandlers = (
 
       // Check if player is already in the game
       const existingPlayer = game.players.find(
-        (p) => p.user.toString() === userId
+        (p) => getUserId(p.user) === userId
       );
 
       if (!existingPlayer && game.status !== "lobby") {
@@ -163,7 +199,7 @@ export const setupGameHandlers = (
       const game = await Game.findOne({ code: gameCode.toUpperCase() });
       if (game) {
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
         if (player) {
           player.isConnected = false;
@@ -233,10 +269,10 @@ export const setupGameHandlers = (
 
       // Notify all players with their personal game state
       for (const player of game.players) {
-        const playerSocketId = userSocketMap[player.user.toString()];
+        const playerSocketId = userSocketMap[getUserId(player.user)];
         if (playerSocketId) {
           io.to(playerSocketId).emit("game:started", {
-            game: getPublicGameState(populatedGame!, player.user.toString()),
+            game: getPublicGameState(populatedGame!, getUserId(player.user)),
             role: player.role,
           });
         }
@@ -261,7 +297,7 @@ export const setupGameHandlers = (
         }
 
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
 
         if (!player || player.role !== "mayor") {
@@ -285,10 +321,10 @@ export const setupGameHandlers = (
 
         // Notify all players with their personal game state
         for (const p of game.players) {
-          const playerSocketId = userSocketMap[p.user.toString()];
+          const playerSocketId = userSocketMap[getUserId(p.user)];
           if (playerSocketId) {
             io.to(playerSocketId).emit("game:dayStart", {
-              game: getPublicGameState(populatedGame!, p.user.toString()),
+              game: getPublicGameState(populatedGame!, getUserId(p.user)),
               dayDuration: game.settings.dayDuration,
             });
           }
@@ -314,7 +350,7 @@ export const setupGameHandlers = (
         }
 
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
 
         if (!player) {
@@ -356,10 +392,10 @@ export const setupGameHandlers = (
 
           // Notify for voting phase
           for (const p of game.players) {
-            const playerSocketId = userSocketMap[p.user.toString()];
+            const playerSocketId = userSocketMap[getUserId(p.user)];
             if (playerSocketId) {
               io.to(playerSocketId).emit("game:votingStart", {
-                game: getPublicGameState(populatedGame!, p.user.toString()),
+                game: getPublicGameState(populatedGame!, getUserId(p.user)),
                 voteType: "findSeer",
               });
             }
@@ -403,7 +439,7 @@ export const setupGameHandlers = (
         }
 
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
 
         if (!player || player.role !== "mayor") {
@@ -469,10 +505,10 @@ export const setupGameHandlers = (
         .populate("host", "fullName username profilePic");
 
       for (const p of game.players) {
-        const playerSocketId = userSocketMap[p.user.toString()];
+        const playerSocketId = userSocketMap[getUserId(p.user)];
         if (playerSocketId) {
           io.to(playerSocketId).emit("game:votingStart", {
-            game: getPublicGameState(populatedGame!, p.user.toString()),
+            game: getPublicGameState(populatedGame!, getUserId(p.user)),
             voteType: "findWerewolf",
           });
         }
@@ -496,7 +532,7 @@ export const setupGameHandlers = (
         }
 
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
 
         if (!player) {
@@ -563,7 +599,7 @@ export const setupGameHandlers = (
 
           // Determine winner
           const eliminatedPlayer = game.players.find(
-            (p) => p.user.toString() === eliminated
+            (p) => getUserId(p.user) === eliminated
           );
 
           let winner: "village" | "werewolf";
@@ -651,6 +687,63 @@ export const setupGameHandlers = (
     }
   );
 
+  // Restart game (host only) - resets the game with same players
+  socket.on("game:restart", async (data: { gameCode: string }) => {
+    try {
+      const { gameCode } = data;
+      const game = await Game.findOne({ code: gameCode.toUpperCase() });
+
+      if (!game) {
+        socket.emit("game:error", { message: "Game not found" });
+        return;
+      }
+
+      if (getUserId(game.host) !== userId) {
+        socket.emit("game:error", { message: "Only host can restart the game" });
+        return;
+      }
+
+      if (game.status !== "ended") {
+        socket.emit("game:error", { message: "Can only restart ended games" });
+        return;
+      }
+
+      // Reset game state
+      game.status = "lobby";
+      game.magicWord = undefined;
+      game.wordOptions = [];
+      game.questions = [];
+      game.votes = [];
+      game.tokensUsed = [];
+      game.wordGuessed = false;
+      game.guessedBy = undefined;
+      game.voteType = undefined;
+      game.winner = undefined;
+      game.dayStartTime = undefined;
+      game.tokens = { ...game.settings.tokenCounts };
+
+      // Reset player roles
+      game.players.forEach((player) => {
+        player.role = null;
+        player.isConnected = true;
+      });
+
+      await game.save();
+
+      const populatedGame = await Game.findById(game._id)
+        .populate("players.user", "fullName username profilePic")
+        .populate("host", "fullName username profilePic");
+
+      // Notify all players that game is restarting
+      io.to(gameCode.toUpperCase()).emit("game:restarted", {
+        game: getPublicGameState(populatedGame!, userId),
+      });
+    } catch (error) {
+      console.error("Error restarting game:", error);
+      socket.emit("game:error", { message: "Failed to restart game" });
+    }
+  });
+
   // Handle disconnect for game
   socket.on("disconnect", async () => {
     const gameCode = socketGameMap[socket.id];
@@ -660,7 +753,7 @@ export const setupGameHandlers = (
       const game = await Game.findOne({ code: gameCode });
       if (game) {
         const player = game.players.find(
-          (p) => p.user.toString() === userId
+          (p) => getUserId(p.user) === userId
         );
         if (player) {
           player.isConnected = false;

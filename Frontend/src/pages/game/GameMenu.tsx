@@ -12,7 +12,6 @@ const GameMenu = () => {
   const { createGame, loading: createLoading } = useCreateGame();
   const { joinGame, loading: joinLoading } = useJoinGame();
 
-  const [showJoinInput, setShowJoinInput] = useState(false);
   const [roomCode, setRoomCode] = useState("");
 
   const handleCreateGame = async () => {
@@ -77,55 +76,35 @@ const GameMenu = () => {
           <div className="divider">OR</div>
 
           {/* Join Game */}
-          {!showJoinInput ? (
+          <form onSubmit={handleJoinGame} className="space-y-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Enter Room Code</span>
+              </label>
+              <input
+                type="text"
+                placeholder="ABCD"
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                maxLength={4}
+                className="input input-bordered input-lg text-center font-mono tracking-widest"
+              />
+            </div>
             <button
-              onClick={() => setShowJoinInput(true)}
-              className="btn btn-outline btn-lg gap-2"
+              type="submit"
+              disabled={joinLoading || roomCode.length !== 4}
+              className="btn btn-outline btn-lg w-full gap-2"
             >
-              <FaSignInAlt />
-              Join Game
+              {joinLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                <>
+                  <FaSignInAlt />
+                  Join Game
+                </>
+              )}
             </button>
-          ) : (
-            <form onSubmit={handleJoinGame} className="space-y-4">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Enter Room Code</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="ABCD"
-                  value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  maxLength={4}
-                  className="input input-bordered input-lg text-center font-mono tracking-widest"
-                  autoFocus
-                />
-              </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowJoinInput(false);
-                    setRoomCode("");
-                  }}
-                  className="btn btn-ghost flex-1"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={joinLoading || roomCode.length !== 4}
-                  className="btn btn-primary flex-1"
-                >
-                  {joinLoading ? (
-                    <span className="loading loading-spinner"></span>
-                  ) : (
-                    "Join"
-                  )}
-                </button>
-              </div>
-            </form>
-          )}
+          </form>
 
           <div className="divider"></div>
 
