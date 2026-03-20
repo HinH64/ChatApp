@@ -22,7 +22,7 @@ A full-stack real-time chat application built with the MERN stack, featuring ins
 - **User Search** - Filter conversations by name in real-time
 - **Profile Management** - Edit profile, upload custom avatar, change password
 - **Dark/Light Theme** - Toggle between themes
-- **Werewords Game** - Multiplayer party game with roles (Mayor, Seer, Werewolf, Villagers)
+- **Werewords Game** - Multiplayer party game with roles (Mayor, Seer, Werewolf, Villagers); two-phase voting (find the Seer or find the Werewolf), role indicators, voting progress display, and chat history during voting
 - **Admin Panel** - User management for admins (view, edit roles, delete users)
 - **Responsive Design** - Mobile-friendly with collapsible sidebar
 
@@ -108,19 +108,22 @@ ChatApp/
 | `game:join` | Client → Server | Player joins game room |
 | `game:leave` | Client → Server | Player leaves game |
 | `game:start` | Client → Server | Host starts game (4+ players) |
+| `game:updateSettings` | Client → Server | Host updates game settings in lobby |
 | `game:selectWord` | Client → Server | Mayor selects magic word |
 | `game:question` | Client → Server | Player asks a question |
 | `game:mayorResponse` | Client → Server | Mayor responds with token |
 | `game:timeUp` | Client → Server | Day phase timer ends |
 | `game:vote` | Client → Server | Player casts vote |
+| `game:state` | Server → Client | Full game state sent on join |
 | `game:playerJoined` | Server → Client | Player joined broadcast |
 | `game:playerLeft` | Server → Client | Player left broadcast |
 | `game:started` | Server → Client | Game started with roles |
+| `game:settingsUpdated` | Server → Client | Settings updated broadcast |
 | `game:dayStart` | Server → Client | Day phase begins |
 | `game:newQuestion` | Server → Client | New question asked |
 | `game:wordGuessed` | Server → Client | Word guessed correctly |
 | `game:tokenResponse` | Server → Client | Mayor token response |
-| `game:votingStart` | Server → Client | Voting phase begins |
+| `game:votingStart` | Server → Client | Voting phase begins (findSeer or findWerewolf) |
 | `game:voteCast` | Server → Client | Vote counted |
 | `game:gameOver` | Server → Client | Game ends with results |
 | `game:error` | Server → Client | Error message |
@@ -208,5 +211,6 @@ npm start
 - `tokens` - Yes/No/Maybe/SoClose counts
 - `questions` - Asked questions with responses
 - `votes` - Player votes
-- `settings` - Word category, difficulty, day duration
+- `voteType` - `findSeer` (werewolves vote) or `findWerewolf` (villagers vote)
+- `settings` - Word category, difficulty, day duration, token counts
 - `winner` - villagers/werewolves/none
